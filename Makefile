@@ -8,14 +8,34 @@
 #####################################################################
 # Flags
 #####################################################################
-CXXFLAGS +=
+CXXFLAGS += -std=c++11 -g -O -Wall -Weffc++ -pedantic  \
+	-pedantic-errors -Wextra -Waggregate-return -Wcast-align \
+	-Wcast-qual -Wconversion \
+	-Wdisabled-optimization \
+	-Werror -Wfloat-equal -Wformat=2 \
+	-Wformat-nonliteral -Wformat-security  \
+	-Wformat-y2k \
+	-Wimplicit  -Wimport  -Winit-self  -Winline \
+	-Winvalid-pch   \
+	-Wlong-long \
+	-Wmissing-field-initializers -Wmissing-format-attribute   \
+	-Wmissing-include-dirs -Wmissing-noreturn \
+	-Wpacked  -Wpadded -Wpointer-arith \
+	-Wredundant-decls \
+	-Wshadow -Wstack-protector \
+	-Wstrict-aliasing=2 -Wswitch-default \
+	-Wswitch-enum \
+	-Wunreachable-code -Wunused \
+	-Wunused-parameter \
+	-Wvariadic-macros \
+	-Wwrite-strings
 LDFLAGS +=
 program_LIBRARIES :=
 program_TEST_LIBRARIES :=
 program_EXPERIMENTALS_LIBRARIES :=
-program_INCLUDES :=
-program_TEST_INCLUDES :=
-program_EXPERIMENTALS_INCLUDES :=
+program_INCLUDES := -I headers
+program_TEST_INCLUDES := -I tests/headers
+program_EXPERIMENTALS_INCLUDES := -I experimentals/headers
 
 #####################################################################
 # Source Directories
@@ -37,9 +57,9 @@ program_EXPERIMENTALS_BUILDDIR := $(program_BUILDDIR)/experimentals
 # Targets
 #####################################################################
 program_TARGET_DIR := target
-program_PRODUCTION_TARGET :=
-program_TEST_TARGET :=
-program_EXPERIMENTALS_TARGET :=
+program_PRODUCTION_TARGET := hackvm
+program_TEST_TARGET := hackvm_test
+program_EXPERIMENTALS_TARGET := hackvm_experimentals
 
 #####################################################################
 # Sources and Source Extension
