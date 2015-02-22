@@ -7,10 +7,21 @@ namespace hack {
     class Parser {
     public:
         Parser() = default;
+        Parser(std::istream&);
         ~Parser() = default;
         Parser(Parser&&) = delete;
         Parser(const Parser&) = delete;
+
+        bool hasMoreCommands();
+        void advance();
+        // COMMAND_TYPE commandType();
+        // std::string arg1();
+        // std::string arg2();
+
+        std::string getCurrentCommand();
     private:
+        std::istream& _file;
+        std::string _currentCommand;
     };
 }
 
