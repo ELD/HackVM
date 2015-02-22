@@ -5,6 +5,8 @@
 #include <boost/test/unit_test.hpp>
 #include "../../headers/includes.hpp"
 #include "../../headers/parser.hpp"
+#include "../../headers/command_type.hpp"
+#include "../../headers/utilities.hpp"
 #include <iostream>
 
 using namespace boost::unit_test;

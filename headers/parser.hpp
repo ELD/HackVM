@@ -2,6 +2,7 @@
 #define _PARSER_H_
 
 #include "includes.hpp"
+#include "command_type.hpp"
 
 namespace hack {
     class Parser {
@@ -14,7 +15,7 @@ namespace hack {
 
         bool hasMoreCommands();
         void advance();
-        // COMMAND_TYPE commandType();
+        CommandType commandType();
         // std::string arg1();
         // std::string arg2();
 

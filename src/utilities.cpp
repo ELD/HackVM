@@ -32,5 +32,44 @@ namespace hack {
 
             return true;
         }
+
+        std::string commandTypeAsString(const CommandType& command)
+        {
+            std::string retVal;
+
+            switch (command) {
+                case CommandType::C_ARITHMETIC:
+                    retVal = "C_ARITHMETIC";
+                    break;
+                case CommandType::C_PUSH:
+                    retVal = "C_PUSH";
+                    break;
+                case CommandType::C_POP:
+                    retVal = "C_POP";
+                    break;
+                case CommandType::C_LABEL:
+                    retVal = "C_LABEL";
+                    break;
+                case CommandType::C_GOTO:
+                    retVal = "C_GOTO";
+                    break;
+                case CommandType::C_IF:
+                    retVal = "C_IF";
+                    break;
+                case CommandType::C_FUNCTION:
+                    retVal = "C_FUNCTION";
+                    break;
+                case CommandType::C_RETURN:
+                    retVal = "C_RETURN";
+                    break;
+                case CommandType::C_CALL:
+                    retVal = "C_CALL";
+                    break;
+                default:
+                    retVal = "";
+            }
+
+            return retVal;
+        }
     }
 }

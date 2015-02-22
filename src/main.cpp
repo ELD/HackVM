@@ -1,4 +1,5 @@
 #include "../headers/includes.hpp"
+#include "../headers/utilities.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -14,6 +15,8 @@ int main(int argc, char* argv[])
     }
 
     std::cout << "Directory name: " << argv[1] << std::endl;
+
+    std::cout << "Enum: " << hack::utilities::commandTypeAsString(hack::CommandType::C_PUSH) << std::endl;
 
     return 0;
 }
