@@ -1,6 +1,7 @@
 #include "../headers/includes.hpp"
 #include "../headers/utilities.hpp"
 #include "../headers/parser.hpp"
+#include "../headers/code_writer.hpp"
 
 int main(int argc, char* argv[])
 {
