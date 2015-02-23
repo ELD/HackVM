@@ -22,6 +22,7 @@ bool init_function()
     auto code_writer_suite = BOOST_TEST_SUITE("Code Writer Test Suite");
     code_writer_suite->add(BOOST_TEST_CASE(&code_writer_init_test_case));
     code_writer_suite->add(BOOST_TEST_CASE(&code_writer_filename_test_case));
+    code_writer_suite->add(BOOST_TEST_CASE(&code_writer_get_symbol_name_test_case));
 
     framework::master_test_suite().add(parser_suite);
     framework::master_test_suite().add(code_writer_suite);

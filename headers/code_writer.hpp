@@ -15,6 +15,7 @@ namespace hack {
         void setFileName(const std::string&);
 
         std::string getFileName() const;
+        std::string getSymbolName() const;
     private:
         std::ostream& _outFile;
         std::string _currentFileName;

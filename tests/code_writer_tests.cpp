@@ -24,3 +24,16 @@ void code_writer_filename_test_case()
         "Expected 'test.vm' but received " << writer.getFileName()
     );
 }
+
+void code_writer_get_symbol_name_test_case()
+{
+    std::stringstream oss;
+    hack::CodeWriter writer(oss);
+    std::string fileName = "test.vm";
+    writer.setFileName(fileName);
+
+    BOOST_CHECK_MESSAGE(
+        writer.getSymbolName() == "test",
+        "Expected 'test' but received " << writer.getSymbolName()
+    );
+}

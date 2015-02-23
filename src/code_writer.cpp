@@ -19,4 +19,9 @@ namespace hack {
         return _currentFileName;
     }
 
+    std::string CodeWriter::getSymbolName() const
+    {
+        return _currentFileName.substr(0,_currentFileName.find_first_of('.'));
+    }
+
 }
