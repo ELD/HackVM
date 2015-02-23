@@ -11,7 +11,16 @@ namespace hack {
 
     bool Parser::hasMoreCommands()
     {
-        return !_file.eof();
+        std::string tempLine;
+        auto position = _file.tellg();
+        getline(_file, tempLine);
+        _file.seekg(position);
+        if (tempLine == "" || _file.eof()) {
+            _file.seekg(position);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     void Parser::advance()

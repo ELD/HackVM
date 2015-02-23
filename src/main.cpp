@@ -1,5 +1,6 @@
 #include "../headers/includes.hpp"
 #include "../headers/utilities.hpp"
+#include "../headers/parser.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -14,9 +15,15 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::cout << "Directory name: " << argv[1] << std::endl;
+    std::fstream inFile(argv[1]);
 
-    std::cout << "Enum: " << hack::utilities::commandTypeAsString(hack::CommandType::C_PUSH) << std::endl;
+    hack::Parser parser(inFile);
+
+    while(parser.hasMoreCommands()) {
+        parser.advance();
+        std::cout << "Command: " << parser.getCurrentCommand() << std::endl;
+        std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
+    }
 
     return 0;
 }
