@@ -8,6 +8,7 @@ bool init_function();
 void parser_init_test_case();
 void parser_has_more_commands_test_case();
 void parser_command_type_test_case();
+void parser_get_args_test_case();
 
 int main(int argc, char* argv[])
 {
@@ -29,6 +30,7 @@ bool init_function()
     parser_suite->add(BOOST_TEST_CASE(&parser_init_test_case));
     parser_suite->add(BOOST_TEST_CASE(&parser_has_more_commands_test_case));
     parser_suite->add(BOOST_TEST_CASE(&parser_command_type_test_case));
+    parser_suite->add(BOOST_TEST_CASE(&parser_get_args_test_case));
 
     framework::master_test_suite().add(parser_suite);
 
@@ -101,5 +103,24 @@ void parser_command_type_test_case()
     BOOST_CHECK_MESSAGE(
         parser.commandType() == hack::CommandType::C_ARITHMETIC,
         "Expected command C_ARITHMETIC but received " << hack::utilities::commandTypeAsString(parser.commandType())
+    );
+}
+
+void parser_get_args_test_case()
+{
+    std::stringstream oss;
+    mockInputStream(oss);
+
+    hack::Parser parser(oss);
+
+    parser.advance();
+    BOOST_CHECK_MESSAGE(
+        parser.arg1() == "constant",
+        "Expected 'constant' but received " << parser.arg1()
+    );
+
+    BOOST_CHECK_MESSAGE(
+        parser.arg2() == "7",
+        "Expected '7' but received " << parser.arg2()
     );
 }

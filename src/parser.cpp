@@ -47,4 +47,20 @@ namespace hack {
 
         return CommandType::C_PUSH;
     }
+
+    std::string Parser::arg1()
+    {
+        std::regex arg1{R"(push\s(\w*)\s[\d|\w]*)"};
+
+        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg1, 1};
+        return *p;
+    }
+
+    std::string Parser::arg2()
+    {
+        std::regex arg2{R"(push\s\w*\s([\w]*))"};
+
+        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg2, 1};
+        return *p;
+    }
 }
