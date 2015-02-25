@@ -20,7 +20,7 @@ CXXFLAGS += -std=c++1y -g -O -Wall -Weffc++ -pedantic  \
 	-Wlong-long \
 	-Wmissing-field-initializers -Wmissing-format-attribute   \
 	-Wmissing-include-dirs -Wmissing-noreturn \
-	-Wpacked  -Wpadded -Wpointer-arith \
+	-Wpacked -Wpointer-arith \
 	-Wredundant-decls \
 	-Wshadow -Wstack-protector \
 	-Wstrict-aliasing=2 -Wswitch-default \

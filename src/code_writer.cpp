@@ -219,89 +219,51 @@ namespace hack {
 
     void CodeWriter::writeConditionalArithmetic(ArithmeticOperations& op)
     {
+        std::stringstream labelStream;
+        std::string label;
+        std::string conditionalString;
+        if (op == ArithmeticOperations::EQ) {
+            labelStream << "EQ." << _eqCounter;
+            label = labelStream.str();
+            ++_eqCounter;
+            conditionalString = "D;JEQ";
+        } else if (op == ArithmeticOperations::LT) {
+            labelStream << "LT." << _ltCounter;
+            label = labelStream.str();
+            ++_ltCounter;
+            conditionalString = "D;JLT";
+        } else{
+            labelStream << "GT." << _gtCounter;
+            label = labelStream.str();
+            ++_gtCounter;
+            conditionalString = "D;JGT";
+        }
         _outFile << "@SP" << std::endl
             << "AM=M-1" << std::endl
             << "D=M" << std::endl
             << "@SP" << std::endl
             << "AM=M-1" << std::endl
-            << "D=M-D" << std::endl;
-
-        if (op == ArithmeticOperations::EQ) {
-            std::stringstream labelStream;
-            labelStream << "EQ." << _eqCounter;
-            std::string label = labelStream.str();
-
-            _outFile << label << ".TRUE" << std::endl
-                << "D;JEQ" << std::endl
-                << label <<  ".TRUE" << std::endl
-                << "(" << label << ".TRUE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=-1" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "("  << label << ".FALSE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=0" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "(" << label << ".END)"
-                << "@SP" << std::endl
-                << "M=M+1" << std::endl;
-
-                ++_eqCounter;
-        } else if (op == ArithmeticOperations::LT) {
-            std::stringstream labelStream;
-            labelStream << "LT." << _ltCounter;
-            std::string label = labelStream.str();
-
-            _outFile << label << ".TRUE" << std::endl
-                << "D;JLT" << std::endl
-                << label <<  ".TRUE" << std::endl
-                << "(" << label << ".TRUE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=-1" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "("  << label << ".FALSE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=0" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "(" << label << ".END)"
-                << "@SP" << std::endl
-                << "M=M+1" << std::endl;
-
-                ++_ltCounter;
-        } else {
-            std::stringstream labelStream;
-            labelStream << "GT." << _gtCounter;
-            std::string label = labelStream.str();
-
-            _outFile << label << ".TRUE" << std::endl
-                << "D;JGT" << std::endl
-                << label <<  ".TRUE" << std::endl
-                << "(" << label << ".TRUE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=-1" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "("  << label << ".FALSE)" << std::endl
-                << "@SP" << std::endl
-                << "A=M" << std::endl
-                << "M=0" << std::endl
-                << "@" << label << ".END" << std::endl
-                << "0;JMP" << std::endl
-                << "(" << label << ".END)"
-                << "@SP" << std::endl
-                << "M=M+1" << std::endl;
-
-            ++_gtCounter;
-        }
+            << "D=M-D" << std::endl
+            << "@" << label << ".TRUE" << std::endl
+            << conditionalString << std::endl
+            << "@" << label <<  ".FALSE" << std::endl
+            << "0;JMP" << std::endl
+            << "(" << label << ".TRUE)" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=-1" << std::endl
+            << "@" << label << ".END" << std::endl
+            << "0;JMP" << std::endl
+            << "("  << label << ".FALSE)" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=0" << std::endl
+            << "@" << label << ".END" << std::endl
+            << "0;JMP" << std::endl
+            << "(" << label << ".END)" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
     }
 
 }
