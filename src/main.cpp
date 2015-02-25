@@ -3,10 +3,15 @@
 #include "../headers/parser.hpp"
 #include "../headers/code_writer.hpp"
 
+/**
+ * TODO: Extensive refactoring in CodeWriter module, especially
+ * TODO: Write more extensive and well-structure unit tests
+ * TODO: Fix BasicTest output issue
+ * TODO: Directory handling, multiple files, full application
+ */
+
 int main(int argc, char* argv[])
 {
-    // TODO: Directory handling, multiple files, full application
-    // TODO: Fix issue with CodeWriter handling pop commands
     if (argc < 2) {
         std::cout << "No argument sent in." << std::endl << "Example usage: ./hackvm [file|directory]" << std::endl;
         return -1;
@@ -36,12 +41,12 @@ int main(int argc, char* argv[])
         // std::cout << "Command: " << parser.getCurrentCommand() << std::endl;
         // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
-            // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
-            // std::cout << "Arg1: " << parser.arg1() << std::endl;
-            // std::cout << "Arg2: " << parser.arg2() << std::endl;
+            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
+            std::cout << "Arg1: " << parser.arg1() << std::endl;
+            std::cout << "Arg2: " << parser.arg2() << std::endl;
             writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
         } else {
-            // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
+            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
             writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
     }
