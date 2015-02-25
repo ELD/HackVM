@@ -2,16 +2,18 @@
 
 namespace hack {
 
-    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile)
+    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _eqCounter(0), _ltCounter(0), _gtCounter(0)
     {
-        // Do nothing
+        // Do nothing for now
         _outFile << "Test" << std::endl;
     }
 
     void CodeWriter::setFileName(const std::string& fileName)
     {
         _currentFileName = fileName;
-        // TODO: Set symbol name to _currentFileName with extension stripped
+        _eqCounter = 0;
+        _ltCounter = 0;
+        _gtCounter = 0;
     }
 
     std::string CodeWriter::getFileName() const
@@ -24,42 +26,19 @@ namespace hack {
         return _currentFileName.substr(0,_currentFileName.find_first_of('.'));
     }
 
-    void CodeWriter::writeArithmetic(ArithmeticOperations& op)
+    void CodeWriter::writeArithmetic(ArithmeticOperations op)
     {
-        switch (op) {
-            case ArithmeticOperations::ADD:
-                _outFile << "ADD" << std::endl;
-                break;
-            case ArithmeticOperations::SUB:
-                _outFile << "SUB" << std::endl;
-                break;
-            case ArithmeticOperations::NEG:
-                _outFile << "NEG" << std::endl;
-                break;
-            case ArithmeticOperations::EQ:
-                _outFile << "EQ" << std::endl;
-                break;
-            case ArithmeticOperations::GT:
-                _outFile << "GT" << std::endl;
-                break;
-            case ArithmeticOperations::LT:
-                _outFile << "LT" << std::endl;
-                break;
-            case ArithmeticOperations::AND:
-                _outFile << "AND" << std::endl;
-                break;
-            case ArithmeticOperations::OR:
-                _outFile << "OR" << std::endl;
-                break;
-            case ArithmeticOperations::NOT:
-                _outFile << "NOT" << std::endl;
-                break;
-            default:
-                break;
+        if (op == ArithmeticOperations::ADD || op == ArithmeticOperations::SUB ||
+            op == ArithmeticOperations::AND || op == ArithmeticOperations::OR) {
+            writeBinaryArithmetic(op);
+        } else if (op == ArithmeticOperations::EQ || op == ArithmeticOperations::GT || op == ArithmeticOperations::LT) {
+            writeConditionalArithmetic(op);
+        } else {
+            writeUnaryArithmetic(op);
         }
     }
 
-    void CodeWriter::writePushPop(CommandType& command, const std::string& segment, int index)
+    void CodeWriter::writePushPop(CommandType command, const std::string& segment, int index)
     {
         if (command == CommandType::C_PUSH) {
             writePush(segment, index);
@@ -70,7 +49,7 @@ namespace hack {
 
     void CodeWriter::writePush(const std::string& command, int index)
     {
-        if (command == "local") {a
+        if (command == "local") {
             if (index == 0) {
                 _outFile << "@LCL" << std::endl
                     << "A=M" << std::endl
@@ -80,7 +59,7 @@ namespace hack {
                     << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "A=D+A" << std::endl
-                    << "D=M" << std::endl
+                    << "D=M" << std::endl;
             }
         } else if (command == "argument") {
             if (index == 0) {
@@ -104,7 +83,7 @@ namespace hack {
                     << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "A=D+A" << std::endl
-                    << "D=M" << std::endl
+                    << "D=M" << std::endl;
             }
         } else if (command == "that") {
             if (index == 0) {
@@ -155,7 +134,65 @@ namespace hack {
 
     void CodeWriter::writePop(const std::string& command, int index)
     {
+        // TODO: Finish writing pop assembly code
+        if (command == "local") {
 
+        } else if (command == "argument") {
+
+        } else if (command == "this") {
+
+        } else if (command == "that") {
+
+        } else if (command == "pointer") {
+
+        } else if (command == "temp") {
+
+        } else if (command == "constant") {
+
+        } else if (command == "static") {
+
+        }
+    }
+
+    void CodeWriter::writeBinaryArithmetic(ArithmeticOperations& op)
+    {
+        _outFile << "@SP" << std::endl
+            << "AM=M-1" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "AM=M-1" << std::endl;
+        if (op == ArithmeticOperations::ADD) {
+            _outFile << "M=M+D" << std::endl;
+        } else if (op == ArithmeticOperations::SUB) {
+            _outFile << "M=M-D" << std::endl;
+        } else if (op == ArithmeticOperations::AND) {
+            _outFile << "M=M&D" << std::endl;
+        } else if (op == ArithmeticOperations::OR) {
+            _outFile << "M=M|D" << std::endl;
+        }
+
+        _outFile << "@SP" << std::endl
+            << "M=M+1" << std::endl;
+    }
+
+    void CodeWriter::writeUnaryArithmetic(ArithmeticOperations& op)
+    {
+        _outFile << "@SP" << std::endl
+            << "AM=M-1" << std::endl;
+
+        if (op == ArithmeticOperations::NOT) {
+            _outFile << "M=!M" << std::endl;
+        } else if (op == ArithmeticOperations::NEG) {
+            _outFile << "M=-M" << std::endl;
+        }
+
+        _outFile << "@SP" << std::endl
+            << "M=M+1" << std::endl;
+    }
+
+    void CodeWriter::writeConditionalArithmetic(ArithmeticOperations& op)
+    {
+        // TODO: Write conditional arithmetic operation assembly
     }
 
 }

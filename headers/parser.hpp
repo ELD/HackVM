@@ -17,7 +17,7 @@ namespace hack {
         void advance();
         CommandType commandType();
         std::string arg1();
-        std::string arg2();
+        int arg2();
 
         std::string getCurrentCommand();
     private:

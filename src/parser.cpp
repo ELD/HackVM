@@ -65,11 +65,17 @@ namespace hack {
         return *p;
     }
 
-    std::string Parser::arg2()
+    int Parser::arg2()
     {
+        int arg2AsInt = -1;
         std::regex arg2{R"(push\s\w*\s([\w]*))"};
 
         std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg2, 1};
-        return *p;
+        try {
+            arg2AsInt = std::stoi(*p);
+        } catch (std::invalid_argument exc) {
+            // Do nothing
+        }
+        return arg2AsInt;
     }
 }
