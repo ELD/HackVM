@@ -36,8 +36,12 @@ int main(int argc, char* argv[])
         // std::cout << "Command: " << parser.getCurrentCommand() << std::endl;
         // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
+            // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
+            // std::cout << "Arg1: " << parser.arg1() << std::endl;
+            // std::cout << "Arg2: " << parser.arg2() << std::endl;
             writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
         } else {
+            // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
             writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
     }
