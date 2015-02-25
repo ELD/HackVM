@@ -70,18 +70,74 @@ namespace hack {
 
     void CodeWriter::writePush(const std::string& command, int index)
     {
-        if (command == "local") {
-
+        if (command == "local") {a
+            if (index == 0) {
+                _outFile << "@LCL" << std::endl
+                    << "A=M" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@LCL" << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl
+            }
         } else if (command == "argument") {
-
+            if (index == 0) {
+                _outFile << "@ARG" << std::endl
+                    << "A=M" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@ARG" << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl;
+            }
         } else if (command == "this") {
-
+            if (index == 0) {
+                _outFile << "@THIS" << std::endl
+                    << "A=M" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@THIS" << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl
+            }
         } else if (command == "that") {
-
+            if (index == 0) {
+                _outFile << "@THAT" << std::endl
+                    << "A=M" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@THAT" << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl;
+            }
         } else if (command == "pointer") {
-
+            if (index == 0) {
+                _outFile << "@THIS" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@THAT" << std::endl
+                    << "D=M" << std::endl;
+            }
         } else if (command == "temp") {
-
+            if (index == 0) {
+                _outFile << "@5" << std::endl
+                    << "A=M" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "@5" << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl;
+            }
         } else if (command == "constant") {
             _outFile << "@" << index << std::endl
                 << "D=A" << std::endl;
