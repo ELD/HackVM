@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
             writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
         } else {
-
+            writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
     }
 

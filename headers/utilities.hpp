@@ -3,6 +3,7 @@
 
 #include "includes.hpp"
 #include "command_type.hpp"
+#include "arithmetic_operations.hpp"
 
 namespace hack {
     namespace utilities {
@@ -10,6 +11,7 @@ namespace hack {
         void stripComments(std::string&);
         bool isWhitespace(std::string&);
         std::string commandTypeAsString(const CommandType&);
+        ArithmeticOperations arithmeticCommandToOperation(const std::string&);
     }
 }
 

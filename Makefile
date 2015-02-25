@@ -12,7 +12,7 @@ CXXFLAGS += -std=c++1y -g -O -Wall -Weffc++ -pedantic  \
 	-pedantic-errors -Wextra -Waggregate-return -Wcast-align \
 	-Wcast-qual -Wconversion \
 	-Wdisabled-optimization \
-	-Wfloat-equal -Wformat=2 \
+	-Werror -Wfloat-equal -Wformat=2 \
 	-Wformat-nonliteral -Wformat-security  \
 	-Wformat-y2k \
 	-Wimplicit  -Wimport  -Winit-self  -Winline \

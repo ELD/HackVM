@@ -1,11 +1,12 @@
 #include "../headers/code_writer.hpp"
 
+// TODO: Add std::endl after each command type prints to ostream buffer to differentiate types of commands
+
 namespace hack {
 
     CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _eqCounter(0), _ltCounter(0), _gtCounter(0)
     {
         // Do nothing for now
-        _outFile << "Test" << std::endl;
     }
 
     void CodeWriter::setFileName(const std::string& fileName)
@@ -129,28 +130,54 @@ namespace hack {
             << "A=M" << std::endl
             << "M=D" << std::endl
             << "@SP" << std::endl
-            << "M=M+1" << std::endl;
+            << "M=M+1" << std::endl << std::endl;
     }
 
     void CodeWriter::writePop(const std::string& command, int index)
     {
         // TODO: Finish writing pop assembly code
         if (command == "local") {
+            if (index == 0) {
 
+            } else {
+
+            }
         } else if (command == "argument") {
+            if (index == 0) {
 
+            } else {
+
+            }
         } else if (command == "this") {
+            if (index == 0) {
 
+            } else {
+
+            }
         } else if (command == "that") {
+            if (index == 0) {
 
+            } else {
+
+            }
         } else if (command == "pointer") {
+            if (index == 0) {
 
+            } else {
+
+            }
         } else if (command == "temp") {
+            if (index == 0) {
 
-        } else if (command == "constant") {
+            } else {
 
+            }
         } else if (command == "static") {
+            if (index == 0) {
 
+            } else {
+
+            }
         }
     }
 
@@ -172,7 +199,7 @@ namespace hack {
         }
 
         _outFile << "@SP" << std::endl
-            << "M=M+1" << std::endl;
+            << "M=M+1" << std::endl << std::endl;
     }
 
     void CodeWriter::writeUnaryArithmetic(ArithmeticOperations& op)
@@ -187,12 +214,94 @@ namespace hack {
         }
 
         _outFile << "@SP" << std::endl
-            << "M=M+1" << std::endl;
+            << "M=M+1" << std::endl << std::endl;
     }
 
     void CodeWriter::writeConditionalArithmetic(ArithmeticOperations& op)
     {
-        // TODO: Write conditional arithmetic operation assembly
+        _outFile << "@SP" << std::endl
+            << "AM=M-1" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "AM=M-1" << std::endl
+            << "D=M-D" << std::endl;
+
+        if (op == ArithmeticOperations::EQ) {
+            std::stringstream labelStream;
+            labelStream << "EQ." << _eqCounter;
+            std::string label = labelStream.str();
+
+            _outFile << label << ".TRUE" << std::endl
+                << "D;JEQ" << std::endl
+                << label <<  ".TRUE" << std::endl
+                << "(" << label << ".TRUE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=-1" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "("  << label << ".FALSE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=0" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "(" << label << ".END)"
+                << "@SP" << std::endl
+                << "M=M+1" << std::endl;
+
+                ++_eqCounter;
+        } else if (op == ArithmeticOperations::LT) {
+            std::stringstream labelStream;
+            labelStream << "LT." << _ltCounter;
+            std::string label = labelStream.str();
+
+            _outFile << label << ".TRUE" << std::endl
+                << "D;JLT" << std::endl
+                << label <<  ".TRUE" << std::endl
+                << "(" << label << ".TRUE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=-1" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "("  << label << ".FALSE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=0" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "(" << label << ".END)"
+                << "@SP" << std::endl
+                << "M=M+1" << std::endl;
+
+                ++_ltCounter;
+        } else {
+            std::stringstream labelStream;
+            labelStream << "GT." << _gtCounter;
+            std::string label = labelStream.str();
+
+            _outFile << label << ".TRUE" << std::endl
+                << "D;JGT" << std::endl
+                << label <<  ".TRUE" << std::endl
+                << "(" << label << ".TRUE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=-1" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "("  << label << ".FALSE)" << std::endl
+                << "@SP" << std::endl
+                << "A=M" << std::endl
+                << "M=0" << std::endl
+                << "@" << label << ".END" << std::endl
+                << "0;JMP" << std::endl
+                << "(" << label << ".END)"
+                << "@SP" << std::endl
+                << "M=M+1" << std::endl;
+
+            ++_gtCounter;
+        }
     }
 
 }

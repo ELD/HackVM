@@ -71,5 +71,28 @@ namespace hack {
 
             return retVal;
         }
+
+        ArithmeticOperations arithmeticCommandToOperation(const std::string& arg1)
+        {
+            if (arg1 == "add") {
+                return ArithmeticOperations::ADD;
+            } else if (arg1 == "sub") {
+                return ArithmeticOperations::SUB;
+            } else if (arg1 == "and") {
+                return ArithmeticOperations::AND;
+            } else if (arg1 == "or") {
+                return ArithmeticOperations::OR;
+            } else if (arg1 == "neg") {
+                return ArithmeticOperations::NEG;
+            } else if (arg1 == "not") {
+                return ArithmeticOperations::NOT;
+            } else if (arg1 == "eq") {
+                return ArithmeticOperations::EQ;
+            } else if (arg1 == "lt") {
+                return ArithmeticOperations::LT;
+            } else {
+                return ArithmeticOperations::GT;
+            }
+        }
     }
 }
