@@ -23,6 +23,7 @@ namespace hack {
     private:
         void writePush(const std::string&,int);
         void writePop(const std::string&,int);
+        void popToD();
         void writeBinaryArithmetic(ArithmeticOperations&);
         void writeUnaryArithmetic(ArithmeticOperations&);
         void writeConditionalArithmetic(ArithmeticOperations&);

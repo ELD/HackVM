@@ -33,6 +33,12 @@ namespace hack {
             return true;
         }
 
+        std::string getShortFileName(const std::string& file)
+        {
+            std::string intermediate = file.substr(file.find_last_of('/')+1);
+            return intermediate.substr(0,intermediate.find_last_of('.'));
+        }
+
         std::string commandTypeAsString(const CommandType& command)
         {
             std::string retVal;

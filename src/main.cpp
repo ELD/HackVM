@@ -6,6 +6,7 @@
 int main(int argc, char* argv[])
 {
     // TODO: Directory handling, multiple files, full application
+    // TODO: Fix issue with CodeWriter handling pop commands
     if (argc < 2) {
         std::cout << "No argument sent in." << std::endl << "Example usage: ./hackvm [file|directory]" << std::endl;
         return -1;
@@ -17,11 +18,18 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    std::fstream inFile(argv[1]);
-    std::ostringstream outputStream;
+    std::string inFileName{argv[1]};
+    std::string outFileName{inFileName.substr(0,inFileName.find_last_of('.')) + ".asm"};
+    std::string shortFileName{hack::utilities::getShortFileName(inFileName)};
+    std::cout << shortFileName << std::endl;
+
+    std::ifstream inFile(inFileName);
+    std::ofstream outFile(outFileName);
 
     hack::Parser parser(inFile);
-    hack::CodeWriter writer(outputStream);
+    hack::CodeWriter writer(outFile);
+
+    writer.setFileName(shortFileName);
 
     while(parser.hasMoreCommands()) {
         parser.advance();
@@ -34,9 +42,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::cout << outputStream.str() << std::endl;
-
     inFile.close();
+    outFile.close();
 
     return 0;
 }

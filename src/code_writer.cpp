@@ -1,7 +1,5 @@
 #include "../headers/code_writer.hpp"
 
-// TODO: Add std::endl after each command type prints to ostream buffer to differentiate types of commands
-
 namespace hack {
 
     CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _eqCounter(0), _ltCounter(0), _gtCounter(0)
@@ -138,47 +136,117 @@ namespace hack {
         // TODO: Finish writing pop assembly code
         if (command == "local") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@LCL" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                _outFile << "@LCL" << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "argument") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@ARG" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                _outFile << "@ARG" << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "this") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@THIS" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                _outFile << "@THIS" << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "that") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@THAT" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                _outFile << "@THAT" << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "pointer") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@THIS" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                popToD();
+                _outFile << "@THAT" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "temp") {
             if (index == 0) {
-
+                popToD();
+                _outFile << "@5" << std::endl
+                    << "M=D" << std::endl;
             } else {
-
+                _outFile << "@5" << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=A+D" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
             }
         } else if (command == "static") {
-            if (index == 0) {
-
-            } else {
-
-            }
+            popToD();
+            _outFile << "@" << getFileName() << "." << index << std::endl
+                << "M=D" << std::endl;
         }
+
+        _outFile << std::endl;
+    }
+
+    void CodeWriter::popToD()
+    {
+        _outFile << "@SP" << std::endl
+            << "AM=M-1" << std::endl
+            << "D=M" << std::endl;
     }
 
     void CodeWriter::writeBinaryArithmetic(ArithmeticOperations& op)

@@ -10,6 +10,7 @@ namespace hack {
         void trim(std::string&);
         void stripComments(std::string&);
         bool isWhitespace(std::string&);
+        std::string getShortFileName(const std::string&);
         std::string commandTypeAsString(const CommandType&);
         ArithmeticOperations arithmeticCommandToOperation(const std::string&);
     }

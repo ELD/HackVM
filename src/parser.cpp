@@ -5,7 +5,6 @@ namespace hack {
 
     Parser::Parser(std::istream& inputStream) : _file(inputStream)
     {
-        // TODO: Add more things to the parser, etc
         _currentCommand = "";
     }
 
