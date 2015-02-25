@@ -107,11 +107,10 @@ namespace hack {
         } else if (command == "temp") {
             if (index == 0) {
                 _outFile << "@5" << std::endl
-                    << "A=M" << std::endl
                     << "D=M" << std::endl;
             } else {
                 _outFile << "@5" << std::endl
-                    << "D=M" << std::endl
+                    << "D=A" << std::endl
                     << "@" << index << std::endl
                     << "A=D+A" << std::endl
                     << "D=M" << std::endl;
@@ -133,7 +132,6 @@ namespace hack {
 
     void CodeWriter::writePop(const std::string& command, int index)
     {
-        // TODO: Finish writing pop assembly code
         if (command == "local") {
             if (index == 0) {
                 popToD();
@@ -142,7 +140,7 @@ namespace hack {
                     << "M=D" << std::endl;
             } else {
                 _outFile << "@LCL" << std::endl
-                    << "D=A" << std::endl
+                    << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "D=D+A" << std::endl
                     << "@R13" << std::endl
@@ -160,7 +158,7 @@ namespace hack {
                     << "M=D" << std::endl;
             } else {
                 _outFile << "@ARG" << std::endl
-                    << "D=A" << std::endl
+                    << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "D=D+A" << std::endl
                     << "@R13" << std::endl
@@ -178,7 +176,7 @@ namespace hack {
                     << "M=D" << std::endl;
             } else {
                 _outFile << "@THIS" << std::endl
-                    << "D=A" << std::endl
+                    << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "D=D+A" << std::endl
                     << "@R13" << std::endl
@@ -196,7 +194,7 @@ namespace hack {
                     << "M=D" << std::endl;
             } else {
                 _outFile << "@THAT" << std::endl
-                    << "D=A" << std::endl
+                    << "D=M" << std::endl
                     << "@" << index << std::endl
                     << "D=D+A" << std::endl
                     << "@R13" << std::endl
