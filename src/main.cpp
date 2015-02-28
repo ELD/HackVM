@@ -24,9 +24,24 @@ int main(int argc, char* argv[])
     }
 
     std::string inFileName{argv[1]};
+
+    // Check if the file name supplied is a directory
+    boost::filesystem::path fileOrDirectory{inFileName};
+
+    if (boost::filesystem::is_regular_file(fileOrDirectory)) {
+        std::cout << "Is only a single file." << std::endl;
+    } else {
+        std::cout << "Is a directory." << std::endl;
+        auto files = hack::utilities::getVmFiles(fileOrDirectory);
+        std::cout << "Size of directory: " << files.size() << std::endl;
+        for (const auto& file : files) {
+            std::cout << "File name: " << file << std::endl;
+        }
+        return 0;
+    }
+
     std::string outFileName{inFileName.substr(0,inFileName.find_last_of('.')) + ".asm"};
     std::string shortFileName{hack::utilities::getShortFileName(inFileName)};
-    std::cout << shortFileName << std::endl;
 
     std::ifstream inFile(inFileName);
     std::ofstream outFile(outFileName);
@@ -38,15 +53,9 @@ int main(int argc, char* argv[])
 
     while(parser.hasMoreCommands()) {
         parser.advance();
-        // std::cout << "Command: " << parser.getCurrentCommand() << std::endl;
-        // std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
-            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
-            std::cout << "Arg1: " << parser.arg1() << std::endl;
-            std::cout << "Arg2: " << parser.arg2() << std::endl;
             writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
         } else {
-            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
             writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
     }
