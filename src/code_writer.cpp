@@ -10,9 +10,9 @@ namespace hack {
     void CodeWriter::setFileName(const std::string& fileName)
     {
         _currentFileName = fileName;
-        _eqCounter = 0;
-        _ltCounter = 0;
-        _gtCounter = 0;
+        // _eqCounter = 0;
+        // _ltCounter = 0;
+        // _gtCounter = 0;
     }
 
     std::string CodeWriter::getFileName() const

@@ -6,5 +6,9 @@
 #include <sstream>
 #include <regex>
 #include <fstream>
+#include <vector>
+#include <future>
+//#include <boost/filesystem.hpp>
+//#include <boost/range/iterator_range.hpp>
 
 #endif

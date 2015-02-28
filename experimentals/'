@@ -1,0 +1,14 @@
+#include <iostream>
+#include <boost/filesystem.hpp>
+#include <boost/range/iterator_range.hpp>
+
+int main()
+{
+    boost::filesystem::path p{"."};
+
+    for (const auto& entry : boost::make_iterator_range(boost:filesystem::directory_iterator{p},{})) {
+        std::cout << entry << std::endl;
+    }
+
+    return 0;
+}
