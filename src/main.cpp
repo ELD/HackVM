@@ -8,6 +8,7 @@
  * TODO: Write more extensive and well-structure unit tests
  * TODO: Fix BasicTest output issue
  * TODO: Directory handling, multiple files, full application
+ * TODO: Use std::async to compile multiple vm files
  */
 
 int main(int argc, char* argv[])
@@ -26,19 +27,14 @@ int main(int argc, char* argv[])
     std::string inFileName{argv[1]};
 
     // Check if the file name supplied is a directory
-    boost::filesystem::path fileOrDirectory{inFileName};
+    //boost::filesystem::path fileOrDirectory{inFileName};
+    std::vector<std::string> files;
 
-    if (boost::filesystem::is_regular_file(fileOrDirectory)) {
-        std::cout << "Is only a single file." << std::endl;
-    } else {
-        std::cout << "Is a directory." << std::endl;
-        auto files = hack::utilities::getVmFiles(fileOrDirectory);
-        std::cout << "Size of directory: " << files.size() << std::endl;
-        for (const auto& file : files) {
-            std::cout << "File name: " << file << std::endl;
-        }
-        return 0;
-    }
+    //if (boost::filesystem::is_regular_file(fileOrDirectory)) {
+    //    std::cout << "Is only a single file." << std::endl;
+    //} else {
+    //    files = hack::utilities::getVmFiles(fileOrDirectory);
+    //}
 
     std::string outFileName{inFileName.substr(0,inFileName.find_last_of('.')) + ".asm"};
     std::string shortFileName{hack::utilities::getShortFileName(inFileName)};
