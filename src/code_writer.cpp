@@ -10,9 +10,6 @@ namespace hack {
     void CodeWriter::setFileName(const std::string& fileName)
     {
         _currentFileName = fileName;
-        // _eqCounter = 0;
-        // _ltCounter = 0;
-        // _gtCounter = 0;
     }
 
     std::string CodeWriter::getFileName() const
@@ -48,86 +45,10 @@ namespace hack {
 
     void CodeWriter::writePush(const std::string& command, int index)
     {
-        if (command == "local") {
-            if (index == 0) {
-                _outFile << "@LCL" << std::endl
-                    << "A=M" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@LCL" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "A=D+A" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "argument") {
-            if (index == 0) {
-                _outFile << "@ARG" << std::endl
-                    << "A=M" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@ARG" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "A=D+A" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "this") {
-            if (index == 0) {
-                _outFile << "@THIS" << std::endl
-                    << "A=M" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@THIS" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "A=D+A" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "that") {
-            if (index == 0) {
-                _outFile << "@THAT" << std::endl
-                    << "A=M" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@THAT" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "A=D+A" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "pointer") {
-            if (index == 0) {
-                _outFile << "@THIS" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@THAT" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "temp") {
-            if (index == 0) {
-                _outFile << "@5" << std::endl
-                    << "D=M" << std::endl;
-            } else {
-                _outFile << "@5" << std::endl
-                    << "D=A" << std::endl
-                    << "@" << index << std::endl
-                    << "A=D+A" << std::endl
-                    << "D=M" << std::endl;
-            }
-        } else if (command == "constant") {
-            _outFile << "@" << index << std::endl
-                << "D=A" << std::endl;
-        } else if (command == "static") {
-            _outFile << "@" << getFileName() << "." << index << std::endl
-                << "D=M" << std::endl;
-        }
+        pushToD(command, index);
+        pushDToStack();
 
-        _outFile << "@SP" << std::endl
-            << "A=M" << std::endl
-            << "M=D" << std::endl
-            << "@SP" << std::endl
-            << "M=M+1" << std::endl << std::endl;
+        _outFile << std::endl;
     }
 
     void CodeWriter::writePop(const std::string& command, int index)
@@ -247,6 +168,49 @@ namespace hack {
             << "D=M" << std::endl;
     }
 
+    void CodeWriter::pushToD(const std::string& command, const int& index)
+    {
+        if (command == "this" || command == "that" || command == "local" || command == "argument") {
+            _outFile << commandTypeLabel(command) << std::endl;
+
+            if (index > 0) {
+                _outFile << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "A=M " << std::endl
+                    << "D=M" << std::endl;
+            }
+        } else if (command == "pointer" || command == "temp") {
+            _outFile << commandTypeLabel(command) << std::endl;
+
+            if (index > 0) {
+                _outFile << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "A=D+A" << std::endl
+                    << "D=M" << std::endl;
+            } else {
+                _outFile << "D=M" << std::endl;
+            }
+        } else if (command == "static") {
+            _outFile << "@" << _currentFileName << "." << index << std::endl
+                << "D=M" << std::endl;
+        } else {
+            _outFile << "@" << index << std::endl
+                << "D=A" << std::endl;
+        }
+    }
+
+    void CodeWriter::pushDToStack()
+    {
+        _outFile << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl;
+    }
+
     void CodeWriter::writeBinaryArithmetic(ArithmeticOperations& op)
     {
         _outFile << "@SP" << std::endl
@@ -330,6 +294,26 @@ namespace hack {
             << "@SP" << std::endl
             << "M=M+1" << std::endl
             << std::endl;
+    }
+
+    std::string CodeWriter::commandTypeLabel(const std::string& label)
+    {
+        std::string returnLabel;
+        if (label == "this") {
+            returnLabel = "@THIS";
+        } else if (label == "that") {
+            returnLabel = "@THAT";
+        } else if (label == "local") {
+            returnLabel = "@LCL";
+        } else if (label == "argument") {
+            returnLabel = "@ARG";
+        } else if (label == "pointer") {
+            returnLabel = "@THIS";
+        } else {
+            returnLabel = "@5";
+        }
+
+        return returnLabel;
     }
 
 }

@@ -24,9 +24,12 @@ namespace hack {
         void writePush(const std::string&,int);
         void writePop(const std::string&,int);
         void popToD();
+        void pushToD(const std::string&, const int&);
+        void pushDToStack();
         void writeBinaryArithmetic(ArithmeticOperations&);
         void writeUnaryArithmetic(ArithmeticOperations&);
         void writeConditionalArithmetic(ArithmeticOperations&);
+        std::string commandTypeLabel(const std::string&);
 
         std::ostream& _outFile;
         std::string _currentFileName;
