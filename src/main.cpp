@@ -49,10 +49,11 @@ int main(int argc, char* argv[])
 
     while(parser.hasMoreCommands()) {
         parser.advance();
+        std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
-            writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
+            //writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
         } else {
-            writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
+            //writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
     }
 

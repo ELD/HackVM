@@ -44,6 +44,12 @@ namespace hack {
         std::regex pushRegex(R"(push\s.*)");
         std::regex popRegex(R"(pop\s.*)");
         std::regex arithmeticRegex(R"(add|sub|neg|eq|lt|gt|and|or|not)");
+        std::regex labelRegex(R"(label\s*(?:\w*))");
+        std::regex gotoRegex(R"(goto\s*(?:\w*))");
+        std::regex ifGotoRegex(R"(if-goto\s*(?:\w*))");
+        std::regex functionRegex(R"(function\s*(?:\w*)\s*(?:\d*))");
+        std::regex returnRegex(R"(return)");
+        std::regex callRegex(R"(call\s*(?:\w*)\s*(?:\d*))");
 
         if (std::regex_search(_currentCommand, pushRegex)) {
             return CommandType::C_PUSH;
@@ -51,6 +57,18 @@ namespace hack {
             return CommandType::C_POP;
         } else if (std::regex_search(_currentCommand, arithmeticRegex)) {
             return CommandType::C_ARITHMETIC;
+        } else if (std::regex_search(_currentCommand, labelRegex)) {
+            return CommandType::C_LABEL;
+        } else if (std::regex_search(_currentCommand, gotoRegex)) {
+            return CommandType::C_GOTO;
+        } else if (std::regex_search(_currentCommand, ifGotoRegex)) {
+            return CommandType::C_IF;
+        } else if (std::regex_search(_currentCommand, functionRegex)) {
+            return CommandType::C_FUNCTION;
+        } else if (std::regex_search(_currentCommand, returnRegex)) {
+            return CommandType::C_RETURN;
+        } else if (std::regex_search(_currentCommand, callRegex)) {
+            return CommandType::C_CALL;
         }
 
         return CommandType::C_PUSH;
