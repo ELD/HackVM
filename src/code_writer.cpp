@@ -53,111 +53,7 @@ namespace hack {
 
     void CodeWriter::writePop(const std::string& command, int index)
     {
-        if (command == "local") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@LCL" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                _outFile << "@LCL" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "D=D+A" << std::endl
-                    << "@R13" << std::endl
-                    << "M=D" << std::endl;
-                popToD();
-                _outFile << "@R13" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "argument") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@ARG" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                _outFile << "@ARG" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "D=D+A" << std::endl
-                    << "@R13" << std::endl
-                    << "M=D" << std::endl;
-                popToD();
-                _outFile << "@R13" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "this") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@THIS" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                _outFile << "@THIS" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "D=D+A" << std::endl
-                    << "@R13" << std::endl
-                    << "M=D" << std::endl;
-                popToD();
-                _outFile << "@R13" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "that") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@THAT" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                _outFile << "@THAT" << std::endl
-                    << "D=M" << std::endl
-                    << "@" << index << std::endl
-                    << "D=D+A" << std::endl
-                    << "@R13" << std::endl
-                    << "M=D" << std::endl;
-                popToD();
-                _outFile << "@R13" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "pointer") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@THIS" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                popToD();
-                _outFile << "@THAT" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "temp") {
-            if (index == 0) {
-                popToD();
-                _outFile << "@5" << std::endl
-                    << "M=D" << std::endl;
-            } else {
-                _outFile << "@5" << std::endl
-                    << "D=A" << std::endl
-                    << "@" << index << std::endl
-                    << "D=A+D" << std::endl
-                    << "@R13" << std::endl
-                    << "M=D" << std::endl;
-                popToD();
-                _outFile << "@R13" << std::endl
-                    << "A=M" << std::endl
-                    << "M=D" << std::endl;
-            }
-        } else if (command == "static") {
-            popToD();
-            _outFile << "@" << getFileName() << "." << index << std::endl
-                << "M=D" << std::endl;
-        }
-
+        popToMemory(command, index);
         _outFile << std::endl;
     }
 
@@ -166,6 +62,50 @@ namespace hack {
         _outFile << "@SP" << std::endl
             << "AM=M-1" << std::endl
             << "D=M" << std::endl;
+    }
+
+    void CodeWriter::popToMemory(const std::string& command, const int& index)
+    {
+        if (command == "this" || command == "that" || command == "local" || command == "argument") {
+            if (index > 0) {
+                _outFile << commandTypeLabel(command) << std::endl
+                    << "D=M" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
+            } else {
+                popToD();
+                _outFile << commandTypeLabel(command) << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
+            }
+        } else if (command == "pointer" || command == "temp") {
+            if (index > 0) {
+                _outFile << commandTypeLabel(command) << std::endl
+                    << "D=A" << std::endl
+                    << "@" << index << std::endl
+                    << "D=D+A" << std::endl
+                    << "@R13" << std::endl
+                    << "M=D" << std::endl;
+                popToD();
+                _outFile << "@R13" << std::endl
+                    << "A=M" << std::endl
+                    << "M=D" << std::endl;
+            } else {
+                popToD();
+                _outFile << commandTypeLabel(command) << std::endl
+                    << "M=D" << std::endl;
+            }
+        } else if (command == "static") {
+            popToD();
+            _outFile << "@" << getFileName() << "." << index << std::endl
+                << "M=D" << std::endl;
+        }
     }
 
     void CodeWriter::pushToD(const std::string& command, const int& index)

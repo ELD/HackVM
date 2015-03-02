@@ -24,6 +24,7 @@ namespace hack {
         void writePush(const std::string&,int);
         void writePop(const std::string&,int);
         void popToD();
+        void popToMemory(const std::string&, const int&);
         void pushToD(const std::string&, const int&);
         void pushDToStack();
         void writeBinaryArithmetic(ArithmeticOperations&);
