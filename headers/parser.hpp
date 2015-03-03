@@ -23,6 +23,7 @@ namespace hack {
     private:
         std::istream& _file;
         std::string _currentCommand;
+        std::regex _argRegex;
     };
 }
 
