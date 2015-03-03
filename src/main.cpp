@@ -4,7 +4,6 @@
 #include "../headers/code_writer.hpp"
 
 /**
- * TODO: Extensive refactoring in CodeWriter module, especially
  * TODO: Write more extensive and well-structure unit tests
  * TODO: Fix BasicTest output issue
  * TODO: Directory handling, multiple files, full application
@@ -52,6 +51,9 @@ int main(int argc, char* argv[])
         std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
         if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
             //writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
+            std::cout << "Arg1: " << parser.arg1() << "\tArg2: " << parser.arg2() << std::endl;
+        } else if (parser.commandType() == hack::CommandType::C_GOTO) {
+
         } else {
             //writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }

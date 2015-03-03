@@ -76,7 +76,7 @@ namespace hack {
 
     std::string Parser::arg1()
     {
-        std::regex arg1{R"((?:push|pop)\s(\w*)\s[\d|\w]*)"};
+        std::regex arg1{R"((?:[\w-]+)\s([\w]+)(?:\s([\d]*))*\n*)"};
 
         std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg1, 1};
         return *p;
@@ -85,13 +85,13 @@ namespace hack {
     int Parser::arg2()
     {
         int arg2AsInt = -1;
-        std::regex arg2{R"((?:push|pop)\s\w*\s([\w]*))"};
+        std::regex arg2{R"((?:[\w-]+)\s([\w]+)(?:\s([\d]*))*\n*)"};
 
-        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg2, 1};
+        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg2, 2};
         try {
             arg2AsInt = std::stoi(*p);
         } catch (std::invalid_argument exc) {
-            // Do nothing
+            arg2AsInt = -1;
         }
         return arg2AsInt;
     }
