@@ -101,18 +101,18 @@ namespace hack {
             }
         }
 
-        //std::vector<std::string> getVmFiles(const boost::filesystem::path& dirToSearch)
-        //{
-        //    std::vector<std::string> files;
+        std::vector<std::string> getVmFiles(const boost::filesystem::path& dirToSearch)
+        {
+            std::vector<std::string> files;
 
-        //    for (const auto& file : boost::make_iterator_range(boost::filesystem::recursive_directory_iterator{dirToSearch}, {})) {
-        //        std::regex vmFile{R"((?:.*).vm)"};
-        //        if (boost::filesystem::is_regular_file(file) && std::regex_search(file.path().string().begin(), file.path().string().end(), vmFile)) {
-        //            files.push_back(file.path().string());
-        //        }
-        //    }
+            for (const auto& file : boost::make_iterator_range(boost::filesystem::recursive_directory_iterator{dirToSearch}, {})) {
+                std::regex vmFile{R"((?:.*).vm)"};
+                if (boost::filesystem::is_regular_file(file) && std::regex_search(file.path().string().begin(), file.path().string().end(), vmFile)) {
+                    files.emplace_back(file.path().string());
+                }
+            }
 
-        //    return files;
-        //}
+            return files;
+        }
     }
 }

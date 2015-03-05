@@ -26,14 +26,19 @@ int main(int argc, char* argv[])
     std::string inFileName{argv[1]};
 
     // Check if the file name supplied is a directory
-    //boost::filesystem::path fileOrDirectory{inFileName};
+    boost::filesystem::path fileOrDirectory{inFileName};
     std::vector<std::string> files;
 
-    //if (boost::filesystem::is_regular_file(fileOrDirectory)) {
-    //    std::cout << "Is only a single file." << std::endl;
-    //} else {
-    //    files = hack::utilities::getVmFiles(fileOrDirectory);
-    //}
+    if (boost::filesystem::is_regular_file(fileOrDirectory)) {
+        std::cout << "Is only a single file." << std::endl;
+    } else {
+        files = hack::utilities::getVmFiles(fileOrDirectory);
+        for (auto& file : files) {
+            std::cout << file << std::endl;
+        }
+
+        return 0;
+    }
 
     std::string outFileName{inFileName.substr(0,inFileName.find_last_of('.')) + ".asm"};
     std::string shortFileName{hack::utilities::getShortFileName(inFileName)};

@@ -13,7 +13,7 @@ namespace hack {
         std::string getShortFileName(const std::string&);
         std::string commandTypeAsString(const CommandType&);
         ArithmeticOperations arithmeticCommandToOperation(const std::string&);
-        //std::vector<std::string> getVmFiles(const boost::filesystem::path&);
+        std::vector<std::string> getVmFiles(const boost::filesystem::path&);
     }
 }
 
