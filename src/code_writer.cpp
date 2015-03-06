@@ -22,6 +22,87 @@ namespace hack {
         return _currentFileName.substr(0,_currentFileName.find_first_of('.'));
     }
 
+    void CodeWriter::writeInit()
+    {
+        // Set SP=256
+        _outFile << "@256" << std::endl
+            << "D=A" << std::endl
+            << "@SP" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Push return address onto stack
+        _outFile << "@Sys.return" << std::endl
+            << "D=A" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        // Push LCL, ARG, THIS, THAT
+        _outFile << "@LCL" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@ARG" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@THIS" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@THAT" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        // ARG=SP-5
+        _outFile << "@SP" << std::endl
+            << "D=M" << std::endl
+            << "@5" << std::endl
+            << "D=D-A" << std::endl
+            << "@ARG" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // LCL=SP
+        _outFile << "@SP" << std::endl
+            << "D=M" << std::endl
+            << "@LCL" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // goto function
+        _outFile << "@Sys.init" << std::endl
+            << "0;JMP" << std::endl
+            << std::endl;
+
+        // (ReturnLabel)
+        _outFile << "(Sys.return)" << std::endl;
+    }
+
     void CodeWriter::writeArithmetic(ArithmeticOperations op)
     {
         if (op == ArithmeticOperations::ADD || op == ArithmeticOperations::SUB ||
@@ -73,6 +154,80 @@ namespace hack {
         for (int i = 0; i < numLocals; i++) {
             writePushPop(CommandType::C_PUSH, "constant", 0);
         }
+    }
+
+    void CodeWriter::writeCall(const std::string& functionName, const int& numLocals)
+    {
+        _outFile << "@" << functionName << ".return" << std::endl
+            << "D=A" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        // Push LCL, ARG, THIS, THAT
+        _outFile << "@LCL" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@ARG" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@THIS" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        _outFile << "@THAT" << std::endl
+            << "D=M" << std::endl
+            << "@SP" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << "@SP" << std::endl
+            << "M=M+1" << std::endl
+            << std::endl;
+
+        // ARG=SP-(numLocals + 5)
+        _outFile << "@SP" << std::endl
+            << "D=M" << std::endl
+            << "@" << numLocals + 5 << std::endl
+            << "D=D-A" << std::endl
+            << "@ARG" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // LCL=SP
+        _outFile << "@SP" << std::endl
+            << "D=M" << std::endl
+            << "@LCL" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // goto function
+        _outFile << "@" << functionName << std::endl
+            << "0;JMP" << std::endl
+            << std::endl;
+
+        // (ReturnLabel)
+        _outFile << "(" << functionName << ".return)" << std::endl
+            << std::endl;
     }
 
     void CodeWriter::writeReturn()

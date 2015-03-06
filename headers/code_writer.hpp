@@ -15,12 +15,14 @@ namespace hack {
         CodeWriter(const CodeWriter&) = delete;
         CodeWriter(CodeWriter&&) = delete;
         void setFileName(const std::string&);
+        void writeInit();
         void writeArithmetic(ArithmeticOperations);
         void writePushPop(CommandType, const std::string&, const int&);
         void writeLabel(const std::string&);
         void writeGoto(const std::string&);
         void writeIf(const std::string&);
         void writeFunction(const std::string&, const int&);
+        void writeCall(const std::string&, const int&);
         void writeReturn();
 
         std::string getFileName() const;

@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
     hack::CodeWriter writer(outFile);
 
     writer.setFileName(shortFileName);
+    writer.writeInit();
 
     while(parser.hasMoreCommands()) {
         parser.advance();
@@ -67,6 +68,8 @@ int main(int argc, char* argv[])
             writer.writeFunction(parser.arg1(), parser.arg2());
         } else if (parser.commandType() == hack::CommandType::C_RETURN) {
             writer.writeReturn();
+        } else if (parser.commandType() == hack::CommandType::C_CALL) {
+            writer.writeCall(parser.arg1(), parser.arg2());
         } else {
             writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }
