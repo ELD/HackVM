@@ -63,6 +63,10 @@ int main(int argc, char* argv[])
             writer.writeIf(parser.arg1());
         } else if (parser.commandType() == hack::CommandType::C_LABEL) {
             writer.writeLabel(parser.arg1());
+        } else if (parser.commandType() == hack::CommandType::C_FUNCTION) {
+            writer.writeFunction(parser.arg1(), parser.arg2());
+        } else if (parser.commandType() == hack::CommandType::C_RETURN) {
+            writer.writeReturn();
         } else {
             writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
         }

@@ -16,20 +16,23 @@ namespace hack {
         CodeWriter(CodeWriter&&) = delete;
         void setFileName(const std::string&);
         void writeArithmetic(ArithmeticOperations);
-        void writePushPop(CommandType, const std::string&, int);
+        void writePushPop(CommandType, const std::string&, const int&);
         void writeLabel(const std::string&);
         void writeGoto(const std::string&);
         void writeIf(const std::string&);
+        void writeFunction(const std::string&, const int&);
+        void writeReturn();
 
         std::string getFileName() const;
         std::string getSymbolName() const;
     private:
-        void writePush(const std::string&,int);
-        void writePop(const std::string&,int);
+        void writePush(const std::string&,const int&);
+        void writePop(const std::string&,const int&);
         void popToD();
         void popToMemory(const std::string&, const int&);
         void pushToD(const std::string&, const int&);
         void pushDToStack();
+        void pushFrameOffsetToD(const int&);
         void writeBinaryArithmetic(ArithmeticOperations&);
         void writeUnaryArithmetic(ArithmeticOperations&);
         void writeConditionalArithmetic(ArithmeticOperations&);

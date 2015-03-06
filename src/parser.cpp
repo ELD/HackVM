@@ -6,7 +6,7 @@ namespace hack {
     Parser::Parser(std::istream& inputStream) : _file(inputStream)
     {
         _currentCommand = "";
-        _argRegex = R"(^(?:[\w-]+)\s([\w]+)(?:\s([\d]+))*\s*$)";
+        _argRegex = R"(^(?:[\w-]+)\s([\w.$]+)(?:\s([\d]+))*\s*$)";
     }
 
     bool Parser::hasMoreCommands()

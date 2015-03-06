@@ -34,7 +34,7 @@ namespace hack {
         }
     }
 
-    void CodeWriter::writePushPop(CommandType command, const std::string& segment, int index)
+    void CodeWriter::writePushPop(CommandType command, const std::string& segment, const int& index)
     {
         if (command == CommandType::C_PUSH) {
             writePush(segment, index);
@@ -45,8 +45,7 @@ namespace hack {
 
     void CodeWriter::writeLabel(const std::string& label)
     {
-        _outFile << "(" << _funcName << "$" << label << ")" << std::endl
-            << std::endl;
+        _outFile << "(" << _funcName << "$" << label << ")" << std::endl;
     }
 
     void CodeWriter::writeGoto(const std::string& label)
@@ -66,7 +65,77 @@ namespace hack {
             << std::endl;
     }
 
-    void CodeWriter::writePush(const std::string& command, int index)
+    void CodeWriter::writeFunction(const std::string& functionName, const int& numLocals)
+    {
+        _funcName = functionName;
+        _outFile << "(" << _funcName << ")" << std::endl;
+
+        for (int i = 0; i < numLocals; i++) {
+            writePushPop(CommandType::C_PUSH, "constant", 0);
+        }
+    }
+
+    void CodeWriter::writeReturn()
+    {
+        // Set FRAME to R13
+        _outFile << "@LCL" << std::endl
+            << "D=M" << std::endl
+            << "@R13" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set Ret to *(FRAME-5)
+        pushFrameOffsetToD(5);
+        _outFile << "@R14" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set *ARG to the top stack value
+        popToD();
+        _outFile << "@ARG" << std::endl
+            << "A=M" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set SP to ARG+1
+        _outFile << "@ARG" << std::endl
+            << "D=M+1" << std::endl
+            << "@SP" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set THAT to *(FRAME-1)
+        pushFrameOffsetToD(1);
+        _outFile << "@THAT" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set THIS to *(FRAME-2)
+        pushFrameOffsetToD(2);
+        _outFile << "@THIS" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set ARG to *(FRAME-3)
+        pushFrameOffsetToD(3);
+        _outFile << "@ARG" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // Set LCL to *(FRAME-4)
+        pushFrameOffsetToD(4);
+        _outFile << "@LCL" << std::endl
+            << "M=D" << std::endl
+            << std::endl;
+
+        // goto RET
+        _outFile << "@R14" << std::endl
+            << "A=M" << std::endl
+            << "0;JMP" << std::endl
+            << std::endl;
+    }
+
+    void CodeWriter::writePush(const std::string& command, const int& index)
     {
         pushToD(command, index);
         pushDToStack();
@@ -74,7 +143,7 @@ namespace hack {
         _outFile << std::endl;
     }
 
-    void CodeWriter::writePop(const std::string& command, int index)
+    void CodeWriter::writePop(const std::string& command, const int& index)
     {
         popToMemory(command, index);
         _outFile << std::endl;
@@ -172,6 +241,15 @@ namespace hack {
             << "M=D" << std::endl
             << "@SP" << std::endl
             << "M=M+1" << std::endl;
+    }
+
+    void CodeWriter::pushFrameOffsetToD(const int& offset)
+    {
+        _outFile << "@R13" << std::endl
+            << "D=M" << std::endl
+            << "@" << offset << std::endl
+            << "A=D-A" << std::endl
+            << "D=M" << std::endl;
     }
 
     void CodeWriter::writeBinaryArithmetic(ArithmeticOperations& op)
