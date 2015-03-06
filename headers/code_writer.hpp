@@ -17,6 +17,9 @@ namespace hack {
         void setFileName(const std::string&);
         void writeArithmetic(ArithmeticOperations);
         void writePushPop(CommandType, const std::string&, int);
+        void writeLabel(const std::string&);
+        void writeGoto(const std::string&);
+        void writeIf(const std::string&);
 
         std::string getFileName() const;
         std::string getSymbolName() const;
@@ -34,6 +37,7 @@ namespace hack {
 
         std::ostream& _outFile;
         std::string _currentFileName;
+        std::string _funcName;
 
         int _eqCounter;
         int _ltCounter;

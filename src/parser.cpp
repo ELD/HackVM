@@ -6,7 +6,7 @@ namespace hack {
     Parser::Parser(std::istream& inputStream) : _file(inputStream)
     {
         _currentCommand = "";
-        _argRegex = R"((?:[\w-]+)\s([\w]+)(?:\s)([\d]+)*\n*)";
+        _argRegex = R"(^(?:[\w-]+)\s([\w]+)(?:\s([\d]+))*\s*$)";
     }
 
     bool Parser::hasMoreCommands()
@@ -42,15 +42,15 @@ namespace hack {
 
     CommandType Parser::commandType()
     {
-        std::regex pushRegex(R"(push\s.*)");
-        std::regex popRegex(R"(pop\s.*)");
-        std::regex arithmeticRegex(R"(add|sub|neg|eq|lt|gt|and|or|not)");
-        std::regex labelRegex(R"(label\s*(?:\w*))");
-        std::regex gotoRegex(R"(goto\s*(?:\w*))");
-        std::regex ifGotoRegex(R"(if-goto\s*(?:\w*))");
-        std::regex functionRegex(R"(function\s*(?:\w*)\s*(?:\d*))");
-        std::regex returnRegex(R"(return)");
-        std::regex callRegex(R"(call\s*(?:\w*)\s*(?:\d*))");
+        std::regex pushRegex(R"(^push\s.*)");
+        std::regex popRegex(R"(^pop\s.*)");
+        std::regex arithmeticRegex(R"(^add|sub|neg|eq|lt|gt|and|or|not)");
+        std::regex labelRegex(R"(^label\s*(?:\w*))");
+        std::regex gotoRegex(R"(^goto\s*(?:\w*))");
+        std::regex ifGotoRegex(R"(^if-goto\s*(?:\w*))");
+        std::regex functionRegex(R"(^function\s*(?:\w*)\s*(?:\d*))");
+        std::regex returnRegex(R"(^return)");
+        std::regex callRegex(R"(^call\s*(?:\w*)\s*(?:\d*))");
 
         if (std::regex_search(_currentCommand, pushRegex)) {
             return CommandType::C_PUSH;

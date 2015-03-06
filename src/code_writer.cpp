@@ -2,7 +2,7 @@
 
 namespace hack {
 
-    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _eqCounter(0), _ltCounter(0), _gtCounter(0)
+    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _currentFileName(""), _funcName(""), _eqCounter(0), _ltCounter(0), _gtCounter(0)
     {
         // Do nothing for now
     }
@@ -41,6 +41,29 @@ namespace hack {
         } else if (command == CommandType::C_POP) {
             writePop(segment, index);
         }
+    }
+
+    void CodeWriter::writeLabel(const std::string& label)
+    {
+        _outFile << "(" << _funcName << "$" << label << ")" << std::endl
+            << std::endl;
+    }
+
+    void CodeWriter::writeGoto(const std::string& label)
+    {
+        _outFile << "@" << _funcName << "$" << label << std::endl
+            << "0;JMP" << std::endl
+            << std::endl;
+    }
+
+    void CodeWriter::writeIf(const std::string& label)
+    {
+        _outFile << "@SP" << std::endl
+            << "AM=M-1" << std::endl
+            << "D=M" << std::endl
+            << "@" << _funcName << "$" << label << std::endl
+            << "D;JNE" << std::endl
+            << std::endl;
     }
 
     void CodeWriter::writePush(const std::string& command, int index)
@@ -119,7 +142,7 @@ namespace hack {
                     << "A=D+A" << std::endl
                     << "D=M" << std::endl;
             } else {
-                _outFile << "A=M " << std::endl
+                _outFile << "A=M" << std::endl
                     << "D=M" << std::endl;
             }
         } else if (command == "pointer" || command == "temp") {
