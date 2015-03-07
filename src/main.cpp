@@ -35,10 +35,6 @@ int main(int argc, char* argv[])
         outFileName = inFileName + "/" + hack::utilities::getShortFileName(inFileName) + ".asm";
     }
 
-    std::cout << "In file name: " << inFileName << std::endl;
-    std::cout << "Short name: " << hack::utilities::getShortFileName(inFileName) << std::endl;
-    std::cout << "Out file name: " << outFileName << std::endl;
-
     std::ofstream outFile(outFileName);
     hack::CodeWriter writer(outFile);
     writer.writeInit();
@@ -53,9 +49,6 @@ int main(int argc, char* argv[])
 
         while(parser.hasMoreCommands()) {
             parser.advance();
-            std::cout << "Current command: " << parser.getCurrentCommand() << std::endl;
-            std::cout << "Current command size: " << parser.getCurrentCommand().size() << std::endl;
-            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
             if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
                 writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
             } else if (parser.commandType() == hack::CommandType::C_GOTO) {
