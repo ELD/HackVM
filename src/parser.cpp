@@ -6,6 +6,7 @@ namespace hack {
     Parser::Parser(std::istream& inputStream) : _file(inputStream)
     {
         _currentCommand = "";
+        _argRegex = R"(^(?:[\w-]+)\s([\w.$]+)(?:\s([\d]+))*\s*$)";
     }
 
     bool Parser::hasMoreCommands()
@@ -27,8 +28,8 @@ namespace hack {
         std::string tempCommand;
         do {
             getline(_file, tempCommand);
-            utilities::trim(tempCommand);
             utilities::stripComments(tempCommand);
+            utilities::trim(tempCommand);
         } while ((utilities::isWhitespace(tempCommand) || tempCommand.substr(0,2) == "//") && hasMoreCommands());
 
         _currentCommand = tempCommand;
@@ -41,9 +42,15 @@ namespace hack {
 
     CommandType Parser::commandType()
     {
-        std::regex pushRegex(R"(push\s.*)");
-        std::regex popRegex(R"(pop\s.*)");
-        std::regex arithmeticRegex(R"(add|sub|neg|eq|lt|gt|and|or|not)");
+        std::regex pushRegex(R"(^push\s.*)");
+        std::regex popRegex(R"(^pop\s.*)");
+        std::regex arithmeticRegex(R"(^add|sub|neg|eq|lt|gt|and|or|not)");
+        std::regex labelRegex(R"(^label\s*(?:\w*))");
+        std::regex gotoRegex(R"(^goto\s*(?:\w*))");
+        std::regex ifGotoRegex(R"(^if-goto\s*(?:\w*))");
+        std::regex functionRegex(R"(^function\s*(?:\w*)\s*(?:\d*))");
+        std::regex returnRegex(R"(^return)");
+        std::regex callRegex(R"(^call\s*(?:\w*)\s*(?:\d*))");
 
         if (std::regex_search(_currentCommand, pushRegex)) {
             return CommandType::C_PUSH;
@@ -51,6 +58,18 @@ namespace hack {
             return CommandType::C_POP;
         } else if (std::regex_search(_currentCommand, arithmeticRegex)) {
             return CommandType::C_ARITHMETIC;
+        } else if (std::regex_search(_currentCommand, labelRegex)) {
+            return CommandType::C_LABEL;
+        } else if (std::regex_search(_currentCommand, gotoRegex)) {
+            return CommandType::C_GOTO;
+        } else if (std::regex_search(_currentCommand, ifGotoRegex)) {
+            return CommandType::C_IF;
+        } else if (std::regex_search(_currentCommand, functionRegex)) {
+            return CommandType::C_FUNCTION;
+        } else if (std::regex_search(_currentCommand, returnRegex)) {
+            return CommandType::C_RETURN;
+        } else if (std::regex_search(_currentCommand, callRegex)) {
+            return CommandType::C_CALL;
         }
 
         return CommandType::C_PUSH;
@@ -58,22 +77,18 @@ namespace hack {
 
     std::string Parser::arg1()
     {
-        std::regex arg1{R"((?:push|pop)\s(\w*)\s[\d|\w]*)"};
-
-        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg1, 1};
+        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), _argRegex, 1};
         return *p;
     }
 
     int Parser::arg2()
     {
         int arg2AsInt = -1;
-        std::regex arg2{R"((?:push|pop)\s\w*\s([\w]*))"};
-
-        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), arg2, 1};
+        std::sregex_token_iterator p{_currentCommand.begin(), _currentCommand.end(), _argRegex, 2};
         try {
             arg2AsInt = std::stoi(*p);
         } catch (std::invalid_argument exc) {
-            // Do nothing
+            arg2AsInt = -1;
         }
         return arg2AsInt;
     }
