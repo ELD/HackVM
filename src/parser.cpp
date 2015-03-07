@@ -28,8 +28,8 @@ namespace hack {
         std::string tempCommand;
         do {
             getline(_file, tempCommand);
-            utilities::trim(tempCommand);
             utilities::stripComments(tempCommand);
+            utilities::trim(tempCommand);
         } while ((utilities::isWhitespace(tempCommand) || tempCommand.substr(0,2) == "//") && hasMoreCommands());
 
         _currentCommand = tempCommand;

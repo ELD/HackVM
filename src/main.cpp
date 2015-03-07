@@ -4,9 +4,6 @@
 #include "../headers/code_writer.hpp"
 
 /**
- * TODO: Write more extensive and well-structure unit tests
- * TODO: Fix BasicTest output issue
- * TODO: Directory handling, multiple files, full application
  * TODO: Use std::async to compile multiple vm files
  */
 
@@ -28,54 +25,59 @@ int main(int argc, char* argv[])
     // Check if the file name supplied is a directory
     boost::filesystem::path fileOrDirectory{inFileName};
     std::vector<std::string> files;
+    std::string outFileName;
 
     if (boost::filesystem::is_regular_file(fileOrDirectory)) {
-        std::cout << "Is only a single file." << std::endl;
+        files.emplace_back(inFileName);
+        outFileName = inFileName.substr(0,inFileName.find_last_of('.')) + ".asm";
     } else {
         files = hack::utilities::getVmFiles(fileOrDirectory);
-        for (auto& file : files) {
-            std::cout << file << std::endl;
-        }
-
-        return 0;
+        outFileName = inFileName + "/" + hack::utilities::getShortFileName(inFileName) + ".asm";
     }
 
-    std::string outFileName{inFileName.substr(0,inFileName.find_last_of('.')) + ".asm"};
-    std::string shortFileName{hack::utilities::getShortFileName(inFileName)};
+    std::cout << "In file name: " << inFileName << std::endl;
+    std::cout << "Short name: " << hack::utilities::getShortFileName(inFileName) << std::endl;
+    std::cout << "Out file name: " << outFileName << std::endl;
 
-    std::ifstream inFile(inFileName);
     std::ofstream outFile(outFileName);
-
-    hack::Parser parser(inFile);
     hack::CodeWriter writer(outFile);
-
-    writer.setFileName(shortFileName);
     writer.writeInit();
 
-    while(parser.hasMoreCommands()) {
-        parser.advance();
-        std::cout << "Current command: " << parser.getCurrentCommand() << std::endl;
-        std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
-        if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
-            writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
-        } else if (parser.commandType() == hack::CommandType::C_GOTO) {
-            writer.writeGoto(parser.arg1());
-        } else if (parser.commandType() == hack::CommandType::C_IF) {
-            writer.writeIf(parser.arg1());
-        } else if (parser.commandType() == hack::CommandType::C_LABEL) {
-            writer.writeLabel(parser.arg1());
-        } else if (parser.commandType() == hack::CommandType::C_FUNCTION) {
-            writer.writeFunction(parser.arg1(), parser.arg2());
-        } else if (parser.commandType() == hack::CommandType::C_RETURN) {
-            writer.writeReturn();
-        } else if (parser.commandType() == hack::CommandType::C_CALL) {
-            writer.writeCall(parser.arg1(), parser.arg2());
-        } else {
-            writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
+    for (auto& file : files) {
+        std::string shortFileName{hack::utilities::getShortFileName(file)};
+        std::ifstream inFile(file);
+
+        hack::Parser parser(inFile);
+
+        writer.setFileName(shortFileName);
+
+        while(parser.hasMoreCommands()) {
+            parser.advance();
+            std::cout << "Current command: " << parser.getCurrentCommand() << std::endl;
+            std::cout << "Current command size: " << parser.getCurrentCommand().size() << std::endl;
+            std::cout << "Command type: " << hack::utilities::commandTypeAsString(parser.commandType()) << std::endl;
+            if (parser.commandType() == hack::CommandType::C_PUSH || parser.commandType() == hack::CommandType::C_POP) {
+                writer.writePushPop(parser.commandType(), parser.arg1(), parser.arg2());
+            } else if (parser.commandType() == hack::CommandType::C_GOTO) {
+                writer.writeGoto(parser.arg1());
+            } else if (parser.commandType() == hack::CommandType::C_IF) {
+                writer.writeIf(parser.arg1());
+            } else if (parser.commandType() == hack::CommandType::C_LABEL) {
+                writer.writeLabel(parser.arg1());
+            } else if (parser.commandType() == hack::CommandType::C_FUNCTION) {
+                writer.writeFunction(parser.arg1(), parser.arg2());
+            } else if (parser.commandType() == hack::CommandType::C_RETURN) {
+                writer.writeReturn();
+            } else if (parser.commandType() == hack::CommandType::C_CALL) {
+                writer.writeCall(parser.arg1(), parser.arg2());
+            } else {
+                writer.writeArithmetic(hack::utilities::arithmeticCommandToOperation(parser.getCurrentCommand()));
+            }
         }
+
+        inFile.close();
     }
 
-    inFile.close();
     outFile.close();
 
     return 0;

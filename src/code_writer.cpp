@@ -2,7 +2,8 @@
 
 namespace hack {
 
-    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile), _currentFileName(""), _funcName(""), _eqCounter(0), _ltCounter(0), _gtCounter(0)
+    CodeWriter::CodeWriter(std::ostream& outFile) : _outFile(outFile) , _currentFileName("") , _funcName("") ,
+    _eqCounter(0) , _ltCounter(0) , _gtCounter(0), _retCounter(0)
     {
         // Do nothing for now
     }
@@ -24,6 +25,8 @@ namespace hack {
 
     void CodeWriter::writeInit()
     {
+        _outFile << "// Write init code" << std::endl;
+
         // Set SP=256
         _outFile << "@256" << std::endl
             << "D=A" << std::endl
@@ -31,8 +34,10 @@ namespace hack {
             << "M=D" << std::endl
             << std::endl;
 
+        _outFile << "// Push everything onto stack" << std::endl;
+
         // Push return address onto stack
-        _outFile << "@Sys.return" << std::endl
+        _outFile << "@Return" << _retCounter << std::endl
             << "D=A" << std::endl
             << "@SP" << std::endl
             << "A=M" << std::endl
@@ -95,16 +100,21 @@ namespace hack {
             << std::endl;
 
         // goto function
+
+        _outFile << "// Call Sys.init" << std::endl;
+
         _outFile << "@Sys.init" << std::endl
             << "0;JMP" << std::endl
             << std::endl;
 
         // (ReturnLabel)
-        _outFile << "(Sys.return)" << std::endl;
+        _outFile << "(Return" << _retCounter << ")" << std::endl;
+        ++_retCounter;
     }
 
     void CodeWriter::writeArithmetic(ArithmeticOperations op)
     {
+        _outFile << "// Write arithmetic operation" << std::endl;
         if (op == ArithmeticOperations::ADD || op == ArithmeticOperations::SUB ||
             op == ArithmeticOperations::AND || op == ArithmeticOperations::OR) {
             writeBinaryArithmetic(op);
@@ -117,6 +127,15 @@ namespace hack {
 
     void CodeWriter::writePushPop(CommandType command, const std::string& segment, const int& index)
     {
+        std::string pushOrPop;
+        if (command == CommandType::C_PUSH) {
+            pushOrPop = "push";
+        } else {
+            pushOrPop = "pop";
+        }
+
+        _outFile << "// " << pushOrPop << " " << segment << " " << index << std::endl;
+
         if (command == CommandType::C_PUSH) {
             writePush(segment, index);
         } else if (command == CommandType::C_POP) {
@@ -131,6 +150,7 @@ namespace hack {
 
     void CodeWriter::writeGoto(const std::string& label)
     {
+        _outFile << "// Write goto" << std::endl;
         _outFile << "@" << _funcName << "$" << label << std::endl
             << "0;JMP" << std::endl
             << std::endl;
@@ -138,6 +158,7 @@ namespace hack {
 
     void CodeWriter::writeIf(const std::string& label)
     {
+        _outFile << "// Write if" << std::endl;
         _outFile << "@SP" << std::endl
             << "AM=M-1" << std::endl
             << "D=M" << std::endl
@@ -148,6 +169,7 @@ namespace hack {
 
     void CodeWriter::writeFunction(const std::string& functionName, const int& numLocals)
     {
+        _outFile << "// Function " << functionName << std::endl;
         _funcName = functionName;
         _outFile << "(" << _funcName << ")" << std::endl;
 
@@ -158,7 +180,8 @@ namespace hack {
 
     void CodeWriter::writeCall(const std::string& functionName, const int& numLocals)
     {
-        _outFile << "@" << functionName << ".return" << std::endl
+        _outFile << "// Calling function " << functionName << std::endl;
+        _outFile << "@Return" << _retCounter << std::endl
             << "D=A" << std::endl
             << "@SP" << std::endl
             << "A=M" << std::endl
@@ -226,12 +249,15 @@ namespace hack {
             << std::endl;
 
         // (ReturnLabel)
-        _outFile << "(" << functionName << ".return)" << std::endl
+        _outFile << "(Return" << _retCounter << ")" << std::endl
             << std::endl;
+
+        ++_retCounter;
     }
 
     void CodeWriter::writeReturn()
     {
+        _outFile << "// Writing return" << std::endl;
         // Set FRAME to R13
         _outFile << "@LCL" << std::endl
             << "D=M" << std::endl
@@ -458,7 +484,7 @@ namespace hack {
             label = labelStream.str();
             ++_ltCounter;
             conditionalString = "D;JLT";
-        } else{
+        } else if (op == ArithmeticOperations::GT) {
             labelStream << "GT." << _gtCounter;
             label = labelStream.str();
             ++_gtCounter;

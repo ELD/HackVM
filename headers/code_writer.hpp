@@ -4,6 +4,7 @@
 #include "includes.hpp"
 #include "../headers/arithmetic_operations.hpp"
 #include "../headers/command_type.hpp"
+#include "utilities.hpp"
 
 namespace hack {
 
@@ -47,6 +48,7 @@ namespace hack {
         int _eqCounter;
         int _ltCounter;
         int _gtCounter;
+        int _retCounter;
     };
 }
 

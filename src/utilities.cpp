@@ -35,8 +35,20 @@ namespace hack {
 
         std::string getShortFileName(const std::string& file)
         {
-            std::string intermediate = file.substr(file.find_last_of('/')+1);
-            return intermediate.substr(0,intermediate.find_last_of('.'));
+            boost::filesystem::path filePath{file};
+            if (boost::filesystem::is_regular_file(filePath)) {
+                std::string intermediate = file.substr(file.find_last_of('/')+1);
+                return intermediate.substr(0,intermediate.find_last_of('.'));
+            }
+            // Is a directory
+
+            std::string intermediate = file;
+            auto index1 = file.find_last_of('/');
+            if (index1 + 1 == file.size()) {
+                intermediate = file.substr(0, index1);
+            }
+
+            return intermediate.substr(intermediate.find_last_of('/') + 1);
         }
 
         std::string commandTypeAsString(const CommandType& command)
